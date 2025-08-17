@@ -14,6 +14,7 @@ It can:
 - Hide itself from lsmod, /proc/modules, and dmesg
 - Suppress kernel taint messages
 - TTY root backdoor
+- Keylogger (still untested)
 
 Usage:
 load - sudo bash make.sh
